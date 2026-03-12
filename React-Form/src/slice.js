@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit"
 
+const getLocalStorage = () => {
+    const getItem = localStorage.getItem("students");
+    const data = JSON.parse(getItem);
+    return data;
+}
+
 const initialState = {
     student: {
         maSV: "",
@@ -7,8 +13,10 @@ const initialState = {
         phone: "",
         email: "",
     },
-    listStudents: [],
+    listStudents: getLocalStorage(),
+    keyword: "",
 }
+
 
 const ReactFormSlice = createSlice({
     name: "ReactFormSlice",
@@ -27,17 +35,35 @@ const ReactFormSlice = createSlice({
             const updateList = [...state.listStudents];
             updateList.push(student);
             state.listStudents = updateList;
+            localStorage.setItem("students", JSON.stringify(updateList));
         },
 
+        updateStudent: (state, action) => {
+            const student = action.payload;
+            const index = state.listStudents.findIndex((item) => item.maSV === student.maSV);
+            const updateList = [...state.listStudents];
+            if (index !== -1) {
+                updateList[index] = student;
+                state.listStudents = updateList;
+            }
+            localStorage.setItem("students", JSON.stringify(updateList));
+
+        },
         removeStudent: (state, action) => {
             const { maSV } = action.payload;
-            const updateList = [...state.listStudents];
-            updateList.splice(maSV, 1);
+            console.log(maSV);
+            const updateList = [...state.listStudents].filter((item) => item.maSV !== maSV);
             state.listStudents = updateList;
-        }
+            localStorage.setItem("students", JSON.stringify(updateList));
+        },
 
+        searchStudent: (state, action) => {
+            state.keyword = action.payload;
+        }
     }
 });
 
-export const { createStudent, updateField, removeStudent } = ReactFormSlice.actions;
+export const { createStudent, updateStudent, updateField, removeStudent, searchStudent } = ReactFormSlice.actions;
+
+
 export default ReactFormSlice.reducer;
