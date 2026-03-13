@@ -1,30 +1,40 @@
-import { useDispatch } from "react-redux";
-import { updateField, updateStudent } from "../slice"
+import { useDispatch, useSelector } from "react-redux";
+import { updateStudent } from "../slice"
+import { useState, useEffect } from "react"
 
-export default function Modal({ editStudent, listStudents, openModal, closeModal }) {
+export default function Modal({ listStudents, closeModal, openModal }) {
+    const { studentEditing } = useSelector(state => state.reactFormReducer);
     const dispatch = useDispatch();
+    const [student, setStudent] = useState({
+        maSV: "",
+        hoTen: "",
+        phone: "",
+        email: ""
+    });
 
-    if (!openModal) return null;
+    useEffect(() => {
+        if (studentEditing) {
+            setStudent(studentEditing);
+        }
+    }, [studentEditing]);
 
-    const findStudent = listStudents.find(item => item.maSV === editStudent);
+
 
     const handleOnChange = (event) => {
         const { name, value } = event.target;
-        dispatch(updateField({ name, value }));
+        setStudent({
+            ...student,
+            [name]: value,
+        });
     }
 
     const handleUpdate = (event) => {
         event.preventDefault();
-        const formData = new FormData(event.target);
-        const studentUpdate = {
-            maSV: formData.get("maSV"),
-            hoTen: formData.get("hoTen"),
-            phone: formData.get("phone"),
-            email: formData.get("email"),
-        };
-        dispatch(updateStudent(studentUpdate));
-        closeModal();
+        dispatch(updateStudent(student))
     }
+
+    if (!openModal) return null;
+
     return (
         <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black/50">
             <div className="relative p-4 w-full max-w-2xl max-h-full">
@@ -46,22 +56,31 @@ export default function Modal({ editStudent, listStudents, openModal, closeModal
                                 <div className="w-xl mx-auto">
                                     <div className="grid grid-cols-2 gap-8">
                                         <div className="mb-5">
-                                            <label htmlFor="maSV" className="block mb-2.5 text-sm font-medium text-heading">Mã sinh viên</label>
-                                            <input type="number" disabled={true} onChange={handleOnChange} defaultValue={findStudent.maSV} name="maSV" id="maSV" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                                            <label className="block mb-2.5 text-sm font-medium text-heading">Mã sinh viên</label>
+                                            <input type="number" disabled={true} onChange={handleOnChange} value={studentEditing.maSV} name="maSV" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                                         </div>
                                         <div className="mb-5">
-                                            <label htmlFor="hoTen" className="block mb-2.5 text-sm font-medium text-heading">Họ tên</label>
-                                            <input type="text" onChange={handleOnChange} defaultValue={findStudent.hoTen} id="hoTen" name="hoTen" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" />
+                                            <label className="block mb-2.5 text-sm font-medium text-heading">Họ tên</label>
+                                            <input type="text" onChange={handleOnChange} value={student.hoTen} name="hoTen" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" />
+                                            {updateError.hoTen && <div className="p-4 mt-2 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert">
+                                                <p className="font-medium me-1">{updateError.hoTen}</p>
+                                            </div>}
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-8">
                                         <div className="mb-5">
-                                            <label htmlFor="phone" className="block mb-2.5 text-sm font-medium text-heading">Số điện thoại</label>
-                                            <input type="number" onChange={handleOnChange} defaultValue={findStudent.phone} id="phone" name="phone" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                                            <label className="block mb-2.5 text-sm font-medium text-heading">Số điện thoại</label>
+                                            <input type="number" onChange={handleOnChange} value={student.phone} name="phone" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                                            {updateError.phone && <div className="p-4 mt-2 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert">
+                                                <p className="font-medium me-1">{updateError.phone}</p>
+                                            </div>}
                                         </div>
                                         <div className="mb-5">
-                                            <label htmlFor="email" className="block mb-2.5 text-sm font-medium text-heading">Email</label>
-                                            <input type="email" onChange={handleOnChange} defaultValue={findStudent.email} id="email" name="email" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" />
+                                            <label className="block mb-2.5 text-sm font-medium text-heading">Email</label>
+                                            <input type="email" onChange={handleOnChange} value={student.email} name="email" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" />
+                                            {updateError.email && <div className="p-4 mt-2 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert">
+                                                <p className="font-medium me-1">{updateError.email}</p>
+                                            </div>}
                                         </div>
                                     </div>
                                 </div>
