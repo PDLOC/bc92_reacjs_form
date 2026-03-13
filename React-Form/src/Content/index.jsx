@@ -1,23 +1,29 @@
 import { useDispatch, useSelector } from "react-redux"
-import { createStudent, updateField, removeStudent, searchStudent } from "../slice"
+import { createStudent, updateField, removeStudent, searchStudent, checkValidation, editStudent } from "../slice"
 import { useState } from "react"
 import Modal from "./Modal"
 
 export default function Content() {
 
-    const { student, listStudents, keyword } = useSelector(state => state.reactFormReducer)
+    const { student, listStudents, keyword, createError } = useSelector(state => state.reactFormReducer)
     const [openModal, setOpenModal] = useState(false);
-    const [editStudent, setEditStudent] = useState(null);
     const dispatch = useDispatch();
 
     const handleOnChange = (event) => {
         const { name, value } = event.target;
         dispatch(updateField({ name, value }));
+
+    }
+
+    const validateForm = (event) => {
+        const { name, value } = event.target;
+        dispatch(checkValidation({ form: "create", name, value }));
     }
 
     const handleCreate = (event) => {
         event.preventDefault();
         dispatch(createStudent(student));
+        event.target.reset();
     }
 
     const isOpenModal = () => {
@@ -49,7 +55,7 @@ export default function Content() {
                         {student.email}
                     </td>
                     <td className="px-6 py-4">
-                        <button className="font-medium text-fg-brand hover:underline mr-4 cursor-pointer" onClick={() => { isOpenModal(true); setEditStudent(student.maSV); }}>Edit</button>
+                        <button className="font-medium text-fg-brand hover:underline mr-4 cursor-pointer" onClick={() => { isOpenModal(true); dispatch(editStudent(student.maSV)); }}>Edit</button>
                         <button className="font-medium text-danger hover:underline cursor-pointer" onClick={() => dispatch(removeStudent({ maSV: student.maSV }))}>Delete</button>
                     </td>
                 </tr >
@@ -65,21 +71,33 @@ export default function Content() {
                         <div className="grid grid-cols-2 gap-8">
                             <div className="mb-5">
                                 <label htmlFor="maSV" className="block mb-2.5 text-sm font-medium text-heading">Mã sinh viên</label>
-                                <input type="number" onChange={handleOnChange} name="maSV" id="maSV" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                                <input type="number" onBlur={validateForm} onChange={handleOnChange} name="maSV" id="maSV" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                                {createError.maSV && <div className="p-4 mt-2 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert">
+                                    <p className="font-medium me-1">{createError.maSV}</p>
+                                </div>}
                             </div>
                             <div className="mb-5">
                                 <label htmlFor="hoTen" className="block mb-2.5 text-sm font-medium text-heading">Họ tên</label>
-                                <input type="text" id="hoTen" onChange={handleOnChange} name="hoTen" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" />
+                                <input type="text" onBlur={validateForm} id="hoTen" onChange={handleOnChange} name="hoTen" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" />
+                                {createError.hoTen && <div className="p-4 mt-2 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert">
+                                    <p className="font-medium me-1">{createError.hoTen}</p>
+                                </div>}
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-8">
                             <div className="mb-5">
                                 <label htmlFor="phone" className="block mb-2.5 text-sm font-medium text-heading">Số điện thoại</label>
-                                <input type="number" id="phone" onChange={handleOnChange} name="phone" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                                <input type="number" onBlur={validateForm} id="phone" onChange={handleOnChange} name="phone" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                                {createError.phone && <div className="p-4 mt-2 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert">
+                                    <p className="font-medium me-1">{createError.phone}</p>
+                                </div>}
                             </div>
                             <div className="mb-5">
                                 <label htmlFor="email" className="block mb-2.5 text-sm font-medium text-heading">Email</label>
-                                <input type="email" id="email" onChange={handleOnChange} name="email" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" />
+                                <input type="email" onBlur={validateForm} id="email" onChange={handleOnChange} name="email" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" />
+                                {createError.email && <div className="p-4 mt-2 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert">
+                                    <p className="font-medium me-1">{createError.email}</p>
+                                </div>}
                             </div>
                         </div>
                     </div>
@@ -120,7 +138,7 @@ export default function Content() {
                     </table>
                 </div>
             </div>
-            <Modal editStudent={editStudent} listStudents={listStudents} closeModal={closeModal} openModal={openModal} />
+            <Modal listStudents={listStudents} closeModal={closeModal} openModal={openModal} />
         </div>
     )
 }
