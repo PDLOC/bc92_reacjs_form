@@ -62,25 +62,18 @@ export default function Modal({ listStudents, closeModal, openModal }) {
                                         <div className="mb-5">
                                             <label className="block mb-2.5 text-sm font-medium text-heading">Họ tên</label>
                                             <input type="text" onChange={handleOnChange} value={student.hoTen} name="hoTen" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" />
-                                            {updateError.hoTen && <div className="p-4 mt-2 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert">
-                                                <p className="font-medium me-1">{updateError.hoTen}</p>
-                                            </div>}
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-8">
                                         <div className="mb-5">
                                             <label className="block mb-2.5 text-sm font-medium text-heading">Số điện thoại</label>
                                             <input type="number" onChange={handleOnChange} value={student.phone} name="phone" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                                            {updateError.phone && <div className="p-4 mt-2 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert">
-                                                <p className="font-medium me-1">{updateError.phone}</p>
-                                            </div>}
+
                                         </div>
                                         <div className="mb-5">
                                             <label className="block mb-2.5 text-sm font-medium text-heading">Email</label>
                                             <input type="email" onChange={handleOnChange} value={student.email} name="email" className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" />
-                                            {updateError.email && <div className="p-4 mt-2 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft" role="alert">
-                                                <p className="font-medium me-1">{updateError.email}</p>
-                                            </div>}
+
                                         </div>
                                     </div>
                                 </div>
